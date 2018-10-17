@@ -3,7 +3,7 @@
   age  = 22
   c99 = std=c99 compiler
 # test comment
-mySurname  =   	How
+mySurname  =   	How are you
 mrTarget : dependency1 dependency2
 	do this command
 	also do this command

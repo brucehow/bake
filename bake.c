@@ -13,7 +13,7 @@
 
 void read(FILE *bakefile) {
 	char line[BUFSIZ];
-
+	
 	while(fgets(line, sizeof line, bakefile) != NULL) {
 		char *ch = line;
 		if(ch[0] != '#' && ch[0] != '\t') {

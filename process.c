@@ -26,7 +26,7 @@ void process(char *ch) {
 	while(*ch != '\n') {
 
 		if(!found) {
-			if(*ch != ' ') {
+			if(!isspace(*ch)) {
 				// Check for alpha-numerical and dot
 				if(isalpha(*ch) || isdigit(*ch) || *ch == '.') {
 					if(key == NULL) {
@@ -60,7 +60,7 @@ void process(char *ch) {
 			}
 		} else {
 			if(value == NULL) {
-				if(*ch != ' ') {
+				if(!isspace(*ch)) {
 					value = malloc(2 * sizeof(char));
 					if(value == NULL) {
 						perror(__func__);
@@ -87,4 +87,6 @@ void process(char *ch) {
 	} else {
 		addTarget(key, value);
 	}
+	free(key);
+	free(value);
 }

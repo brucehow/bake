@@ -8,17 +8,17 @@
 #include <ctype.h>
 #include <string.h>
 
-// Structures
-typedef struct variableItem {
-	char *key;
+// LinkedList
+typedef struct varStruct {
+	char *var;
 	char *value;
-	struct variableItem *next;
+	struct varStruct *next;
 } VARIABLE;
 
-typedef struct targetItem {
+typedef struct tarStruct {
 	char *target;
-	char *dependencies;
-	struct targetItem *next;
+	char **dependencies;
+	struct tarStruct *next;
 } TARGET;
 
 // Variables
