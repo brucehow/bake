@@ -5,5 +5,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
 
-void process_line(char *line);
+void process_target(char *word, char *ch);

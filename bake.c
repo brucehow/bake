@@ -5,22 +5,25 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <ctype.h>
-#include <string.h>
-#include <stdbool.h>
-#include "struct.h"
 #include "process.h"
 
-void read(FILE *bakefile) {
+void read_file(FILE *bakefile) {
 	char line[BUFSIZ];
-	
+
 	while(fgets(line, sizeof line, bakefile) != NULL) {
 		char *ch = line;
-		if(ch[0] != '#' && ch[0] != '\t') {
-			process(ch);
-		}
+		if(*ch == '#') {
+            continue;
+        }
+        process_line(ch);
+        /* Check if this is an action line
+        if(ch[0] == '\t' && current_target != NULL) {
+            process_action(current_target, ch);
+        } else {
+            current_target = NULL; // Finished with target's action(s)
+		    process_line(ch);
+        }*/
 	}
-	debug();
 }
 
 int main(int argc, char *argv[]) {
@@ -33,10 +36,10 @@ int main(int argc, char *argv[]) {
 	// Check filepath validity
 	FILE *fp = fopen(argv[1], "r");
 	if(fp == NULL) {
-		fprintf(stderr, "Could not open %s\n", argv[1]);
+		fprintf(stderr, "Could not open bakefile %s\n", argv[1]);
 		exit(EXIT_FAILURE);
 	}
 
-	read(fp);
+	read_file(fp);
 	exit(EXIT_SUCCESS);
 }
