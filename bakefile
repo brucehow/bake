@@ -5,5 +5,4 @@ myName= Vincent
 # test comment
 mySurname  =   	How are you
 bake.o : cake.h cream.o
-	do this command
-	also do this command
+	cmdline 1

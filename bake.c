@@ -6,23 +6,30 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "process.h"
+#include "targets.h"
+#include "variables.h"
 
 void read_file(FILE *bakefile) {
 	char line[BUFSIZ];
 
 	while(fgets(line, sizeof line, bakefile) != NULL) {
 		char *ch = line;
+
+        // Ignore comment lines
 		if(*ch == '#') {
             continue;
         }
-        process_line(ch);
-        /* Check if this is an action line
-        if(ch[0] == '\t' && current_target != NULL) {
-            process_action(current_target, ch);
+
+        // Check if the line is an action line
+        if(cur_target != NULL) {
+            if(*ch == '\t') {
+                //process_action(cur_target, ch);
+            } else {
+                cur_target = NULL; // Finished with target's action(s)
+            }
         } else {
-            current_target = NULL; // Finished with target's action(s)
 		    process_line(ch);
-        }*/
+        }
 	}
 }
 

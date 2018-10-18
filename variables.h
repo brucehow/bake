@@ -8,10 +8,10 @@
 #include <string.h>
 #include <ctype.h>
 
-typedef struct node {
+typedef struct variable_node {
     char *variable;
     char *value;
-	struct node *next;
+	struct variable_node *next;
 } VARIABLE;
 
 extern VARIABLE *variable_list;

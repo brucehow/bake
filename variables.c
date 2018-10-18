@@ -13,7 +13,7 @@ VARIABLE *variable_list = NULL;
 VARIABLE *last_variable = NULL;
 
 void process_variable(char *word, char *ch) {
-    // Store variable in a new structure
+    // Store variable definition in a new structure
     VARIABLE *new = malloc(sizeof(VARIABLE));
     if(new == NULL) {
         perror(__func__);
@@ -47,6 +47,7 @@ void process_variable(char *word, char *ch) {
         }
         ch++;
     }
+    // Store the value
     new->value = strdup(value);
     free(value);
     printf("Value: %s\n", new->value);
