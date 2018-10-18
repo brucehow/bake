@@ -21,4 +21,4 @@ extern TARGET *cur_target;
 
 TARGET *last_target;
 
-void process_target(char *word, char *ch);
+void process_target_def(char *word, char *ch);

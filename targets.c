@@ -30,7 +30,7 @@ void add_dependecy(char *dependency) {
     printf("Dependency %i = %s\n", cur_target->num, dependency);
 }
 
-void process_target(char *word, char *ch) {
+void process_target_def(char *word, char *ch) {
     // Store target definition in a new structure
     TARGET *new = malloc(sizeof(TARGET));
     if(new == NULL) {

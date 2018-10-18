@@ -17,6 +17,4 @@ typedef struct variable_node {
 extern VARIABLE *variable_list;
 VARIABLE *last_variable;
 
-void process_variable(char *word, char *ch);
-
-char *strdup(const char *str);
+void process_variable_def(char *word, char *ch);

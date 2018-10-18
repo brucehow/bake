@@ -7,5 +7,3 @@
 #include <stdlib.h>
 
 void process_line(char *line);
-
-char* memory_management(char *word, char *ch);

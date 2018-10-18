@@ -24,8 +24,26 @@ void process_line(char *ch) {
             fprintf(stderr, "Invalid declaration character '%c'\n", *ch);
             exit(EXIT_FAILURE);
         }
-        word = memory_management(word, ch);
+        if(word == NULL) {
+            word = malloc(2 * sizeof(char));
+            if(word == NULL) {
+                perror(__func__);
+                exit(EXIT_FAILURE);
+            }
+            word[0] = *ch;
+            word[1] = '\0';
+        } else {
+            int len = strlen(word);
+            word = realloc(word, (len+2) * sizeof(char));
+            if(word == NULL) {
+                perror(__func__);
+                exit(EXIT_FAILURE);
+            }
+            word[len] = *ch;
+            word[len+1] = '\0';
+        }
         ch++;
+
         // Check for end of word
         while(isspace(*ch)) {
             ch++;
@@ -37,36 +55,13 @@ void process_line(char *ch) {
         }
         if(*ch == '=') {
             printf("Variable: %s\n", word);
-            process_variable(word, ++ch);
+            process_variable_def(word, ++ch);
             break;
         } else if(*ch == ':') {
             printf("Target: %s\n", word);
-            //process_target(word, ++ch);
+            process_target_def(word, ++ch);
             break;
         }
     }
     free(word);
 }
-
-char* memory_management(char *word, char *ch){
-    if(word == NULL) {
-        word = malloc(2 * sizeof(char));
-        if(word == NULL) {
-            perror(__func__);
-            exit(EXIT_FAILURE);
-        }
-        word[0] = *ch;
-        word[1] = '\0';
-    } else {
-        int len = strlen(word);
-        word = realloc(word, (len+2) * sizeof(char));
-        if(word == NULL) {
-            perror(__func__);
-            exit(EXIT_FAILURE);
-        }
-        word[len] = *ch;
-        word[len+1] = '\0';
-    }
-    return word;
-}
-
