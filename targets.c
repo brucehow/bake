@@ -8,6 +8,7 @@
 #include <string.h>
 #include <ctype.h>
 #include "targets.h"
+#include "append.h"
 
 TARGET *target_list = NULL;
 TARGET *last_target = NULL;
@@ -20,9 +21,9 @@ void add_dependecy(char *dependency) {
         cur_target->dependencies = malloc(sizeof(char*));
         cur_target->dependencies[0] = malloc(sizeof(char) * strlen(dependency));
         cur_target->dependencies[0] = strdup(dependency);
-        cur_target->num = 1;
+        cur_target->num++;
     } else {
-        cur_target->num = cur_target->num + 1;
+        cur_target->num++;
         cur_target->dependencies = realloc(cur_target->dependencies, cur_target->num * sizeof(char*));
         cur_target->dependencies[cur_target->num] = malloc(sizeof(char) * strlen(dependency));
         cur_target->dependencies[cur_target->num] = strdup(dependency);
@@ -50,24 +51,7 @@ void process_target_def(char *word, char *ch) {
     char *dependency = NULL;
     while(*ch != '\n') {
         if(!isspace(*ch)) {
-            if(dependency == NULL) {
-                dependency = malloc(2 * sizeof(char));
-                if(dependency == NULL) {
-                    perror(__func__);
-                    exit(EXIT_FAILURE);
-                }
-                dependency[0] = *ch;
-                dependency[1] = '\0';
-            } else {
-                int len = strlen(dependency);
-                dependency = realloc(dependency, (len+2) * sizeof(char));
-                if(dependency == NULL) {
-                    perror(__func__);
-                    exit(EXIT_FAILURE);
-                }
-                dependency[len] = *ch;
-                dependency[len+1] = '\0';
-            }
+            dependency = append(dependency, *ch);
         } else if(dependency != NULL) {
             add_dependecy(dependency);
             dependency = NULL;

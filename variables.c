@@ -27,24 +27,7 @@ void process_variable_def(char *word, char *ch) {
         ch++;
     }
     while(*ch != '\n') {
-        if(value == NULL) {
-            value = malloc(2 * sizeof(char));
-            if(value == NULL) {
-                perror(__func__);
-                exit(EXIT_FAILURE);
-            }
-            value[0] = *ch;
-            value[1] = '\0';
-        } else {
-            int len = strlen(value);
-            value = realloc(value, (len+2) * sizeof(char));
-            if(value == NULL) {
-                perror(__func__);
-                exit(EXIT_FAILURE);
-            }
-            value[len] = *ch;
-            value[len+1] = '\0';
-        }
+        value = append(value, *ch);
         ch++;
     }
     // Store the value

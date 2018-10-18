@@ -14,18 +14,17 @@ void read_file(FILE *bakefile) {
 
 	while(fgets(line, sizeof line, bakefile) != NULL) {
 		char *ch = line;
-
         // Ignore comment lines
 		if(*ch == '#') {
             continue;
         }
-
         // Check if the line is an action line
         if(cur_target != NULL) {
             if(*ch == '\t') {
                 //process_action(cur_target, ch);
             } else {
-                cur_target = NULL; // Finished with target's action(s)
+                // No more action lines for current target
+                cur_target = NULL;
             }
         } else {
 		    process_line(ch);
