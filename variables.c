@@ -8,18 +8,30 @@
 #include <string.h>
 #include <ctype.h>
 #include "variables.h"
+#include "process.h"
 
 VARIABLE *variable_list = NULL;
 VARIABLE *last_variable = NULL;
 
+char *strdup(const char *str)
+{
+    int n = strlen(str) + 1;
+    char *dup = malloc(n);
+    if(dup)
+    {
+        strcpy(dup, str);
+    }
+    return dup;
+}
+
 void process_variable(char *word, char *ch) {
-    // Store variable definition in a new structure
+    // Store variable in a new structure
     VARIABLE *new = malloc(sizeof(VARIABLE));
     if(new == NULL) {
         perror(__func__);
         exit(EXIT_FAILURE);
     }
-    new->variable = strdup(word);
+    new -> variable = strdup(word);
 
     // Build the value
     char *value = NULL;
@@ -27,28 +39,10 @@ void process_variable(char *word, char *ch) {
         ch++;
     }
     while(*ch != '\n') {
-        if(value == NULL) {
-            value = malloc(2 * sizeof(char));
-            if(value == NULL) {
-                perror(__func__);
-                exit(EXIT_FAILURE);
-            }
-            value[0] = *ch;
-            value[1] = '\0';
-        } else {
-            int len = strlen(value);
-            value = realloc(value, (len+2) * sizeof(char));
-            if(value == NULL) {
-                perror(__func__);
-                exit(EXIT_FAILURE);
-            }
-            value[len] = *ch;
-            value[len+1] = '\0';
-        }
+        value = memory_management(value, ch);
         ch++;
     }
-    // Store the value
-    new->value = strdup(value);
+    new -> value = strdup(value);
     free(value);
-    printf("Value: %s\n", new->value);
+    printf("Value: %s\n", new -> value);
 }
