@@ -1,8 +1,11 @@
 # Bakefile to build our programs
 myName= Vincent
-  age  = 22
-	  c99 = std=c99 compiler
+  age  = 22\
+years  
+  c99 = std=c99 compiler
 # test comment
 mySurname  =   	How are you
 bake.o : cake.h cream.o
-	cmdline 1
+	echo "Hello there"
+	ls -ltr
+	echo "Directory made!"
