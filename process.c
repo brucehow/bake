@@ -12,7 +12,7 @@
 #include "targets.h"
 #include "append.h"
 
-void process_line(char *ch) {
+void readLine(char *ch) {
     char *word = NULL;
     // Excluding leading spaces
     while(isspace(*ch)) {
@@ -37,10 +37,10 @@ void process_line(char *ch) {
             }
         }
         if(*ch == '=') {
-            process_variable_def(word, ++ch);
+            processVariableDef(word, ++ch);
             break;
         } else if(*ch == ':') {
-            process_target_def(word, ++ch);
+            processTargetDef(word, ++ch);
             break;
         }
     }

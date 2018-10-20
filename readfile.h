@@ -6,4 +6,4 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-char* read_file(FILE *bakefile);
+char* readFile(FILE *bakefile);

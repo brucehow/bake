@@ -10,12 +10,12 @@
 #include "variables.h"
 #include "append.h"
 
-VARIABLE *variable_list = NULL;
-VARIABLE *last_variable = NULL;
+variable *variableList = NULL;
+variable *lastVariable = NULL;
 
-void process_variable_def(char *word, char *ch) {
+void processVariableDef(char *word, char *ch) {
     // Store variable definition in a new structure
-    VARIABLE *new = malloc(sizeof(VARIABLE));
+    variable *new = malloc(sizeof(variable));
     if(new == NULL) {
         perror(__func__);
         exit(EXIT_FAILURE);
@@ -36,11 +36,11 @@ void process_variable_def(char *word, char *ch) {
     free(value);
 
     // Add the variable to the list
-    if(variable_list == NULL) {
-        variable_list = new;
-        last_variable = new;
+    if(variableList == NULL) {
+        variableList = new;
+        lastVariable = new;
     } else {
-        last_variable->next = new;
-        last_variable = new;
+        lastVariable->next = new;
+        lastVariable = new;
     }
 }

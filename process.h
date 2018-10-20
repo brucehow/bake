@@ -6,4 +6,4 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void process_line(char *line);
+void readLine(char *line);

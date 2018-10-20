@@ -1,6 +1,6 @@
 /* CITS2002 Project 2018
  * Names: Bruce How, Vincent Tian
- * Student num_dbers:	22242664, 22262122
+ * Student numDepbers:	22242664, 22262122
 */
 
 #include <stdio.h>
@@ -10,34 +10,49 @@
 #include "targets.h"
 #include "append.h"
 
-TARGET *target_list = NULL;
-TARGET *last_target = NULL;
+target *targetList = NULL;
+target *lastTarget = NULL;
 
 // Target to add actions/dependencies to
-TARGET *current_target = NULL;
+target *currentTarget = NULL;
 
-void add_dependecy(char *dependency) {
-    if(current_target->num_d == 0) {
-        current_target->dependencies = malloc(sizeof(char*));
-        current_target->dependencies[0] = malloc(sizeof(char) * strlen(dependency));
-        current_target->dependencies[0] = strdup(dependency);
-        current_target->num_d++;
+void processActionDef(char *ch) {
+    ch++; // Exclude leading tab
+    if(currentTarget->numAct == 0) {
+        currentTarget->numAct++;
+        currentTarget->actions = malloc(sizeof(char*));
+        currentTarget->actions[0] = malloc(sizeof(char) * strlen(ch));
+        currentTarget->actions[0] = strdup(ch);
     } else {
-        current_target->num_d++;
-        current_target->dependencies = realloc(current_target->dependencies, current_target->num_d * sizeof(char*));
-        current_target->dependencies[current_target->num_d] = malloc(sizeof(char) * strlen(dependency));
-        current_target->dependencies[current_target->num_d] = strdup(dependency);
+        currentTarget->actions = realloc(currentTarget->actions, currentTarget->numAct * sizeof(char*));
+        currentTarget->actions[currentTarget->numAct] = malloc(sizeof(char) * strlen(ch));
+        currentTarget->actions[currentTarget->numAct] = strdup(ch);
+        currentTarget->numAct++;
     }
 }
 
-void process_target_def(char *word, char *ch) {
-    TARGET *new = malloc(sizeof(TARGET));
+void addDependency(char *dependency) {
+    if(currentTarget->numDep == 0) {
+        currentTarget->numDep++;
+        currentTarget->dependencies = malloc(sizeof(char*));
+        currentTarget->dependencies[0] = malloc(sizeof(char) * strlen(dependency));
+        currentTarget->dependencies[0] = strdup(dependency);
+    } else {
+        currentTarget->dependencies = realloc(currentTarget->dependencies, currentTarget->numDep * sizeof(char*));
+        currentTarget->dependencies[currentTarget->numDep] = malloc(sizeof(char) * strlen(dependency));
+        currentTarget->dependencies[currentTarget->numDep] = strdup(dependency);
+        currentTarget->numDep++;
+    }
+}
+
+void processTargetDef(char *word, char *ch) {
+    target *new = malloc(sizeof(target));
     if(new == NULL) {
         perror(__func__);
         exit(EXIT_FAILURE);
     }
     new->target = strdup(word);
-    current_target = new;
+    currentTarget = new;
 
     // Exclude leading spaces
     while(isspace(*ch)) {
@@ -50,36 +65,20 @@ void process_target_def(char *word, char *ch) {
         if(!isspace(*ch)) {
             dependency = append(dependency, *ch);
         } else if(dependency != NULL) {
-            add_dependecy(dependency);
+            addDependency(dependency);
             dependency = NULL;
         }
         ch++;
     }
-    add_dependecy(dependency);
+    addDependency(dependency);
     free(dependency);
 
     // Add the target to the list
-    if(target_list == NULL) {
-        target_list = new;
-        last_target = new;
+    if(targetList == NULL) {
+        targetList = new;
+        lastTarget = new;
     } else {
-        last_target->next = new;
-        last_target = new;
-    }
-}
-
-void process_action_def(char *ch) {
-    ch++; // Exclude leading tab
-
-    if(current_target->num_a == 0) {
-        current_target->actions = malloc(sizeof(char*));
-        current_target->actions[0] = malloc(sizeof(char) * strlen(ch));
-        current_target->actions[0] = strdup(ch);
-        current_target->num_a++;
-    } else {
-        current_target->num_a++;
-        current_target->actions = realloc(current_target->actions, current_target->num_a * sizeof(char*));
-        current_target->actions[current_target->num_a] = malloc(sizeof(char) * strlen(ch));
-        current_target->actions[current_target->num_a] = strdup(ch);
+        lastTarget->next = new;
+        lastTarget = new;
     }
 }

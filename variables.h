@@ -8,13 +8,13 @@
 #include <string.h>
 #include <ctype.h>
 
-typedef struct variable_node {
+typedef struct variableNode {
     char *variable;
     char *value;
-	struct variable_node *next;
-} VARIABLE;
+	struct variableNode *next;
+} variable;
 
-extern VARIABLE *variable_list;
-VARIABLE *last_variable;
+extern variable *variableList;
+variable *lastVariable;
 
-void process_variable_def(char *word, char *ch);
+void processVariableDef(char *word, char *ch);

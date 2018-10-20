@@ -8,7 +8,7 @@
 #include <string.h>
 #include <ctype.h>
 
-void trim_line(char *line) {
+void trimLine(char *line) {
     while(*line != '\0') {
         if(*line == '\n' || *line == '\r') {
             *line = '\0';
@@ -18,34 +18,34 @@ void trim_line(char *line) {
     }
 }
 
-char* read_file(FILE *bakefile) {
+char* readFile(FILE *bakefile) {
 	char line[BUFSIZ];
     int len = 0;
 
-    char *full_line = NULL;
-    int full_len = 0;
+    char *fullLine = NULL;
+    int fullLen = 0;
 
 	while(fgets(line, sizeof line, bakefile) != NULL) {
         // Exclude comment lines
         if(*line == '#') {
             continue;
         }
-		trim_line(line); // Remove trailing \n \r
+		trimLine(line); // Remove trailing \n \r
         len = strlen(line);
-        full_len += len;
+        fullLen += len;
 
-        if(full_line == NULL) {
-            full_line = strdup(line);
+        if(fullLine == NULL) {
+            fullLine = strdup(line);
         } else {
-            full_line = realloc(full_line, full_len+1);
-            strcat(full_line, line);
+            fullLine = realloc(fullLine, fullLen+1);
+            strcat(fullLine, line);
         }
 
         // Check for more continuation symbols
-        if(full_line[full_len-1] != '\\') {
+        if(fullLine[fullLen-1] != '\\') {
             break;
         }
-        full_line[--full_len] = '\0';
+        fullLine[--fullLen] = '\0';
 	}
-    return full_line;
+    return fullLine;
 }

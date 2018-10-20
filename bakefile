@@ -9,3 +9,6 @@ bake.o : cake.h cream.o
 	echo "Hello there"
 	ls -ltr
 	echo "Directory made!"
+target.c : bake.c bake.o
+	echo "WOO"
+	ls

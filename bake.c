@@ -11,8 +11,29 @@
 #include "append.h"
 #include "readfile.h"
 
-void bake_file(char *file) {
-
+void debug() {
+	variable *temp = variableList;
+	printf("\n================ DEBUG ================\nCURRENT VAR\n");
+	while(temp != NULL) {
+		printf("%s = %s\n", temp->variable, temp->value);
+		if(temp->next == NULL) {
+			break;
+		}
+		temp = temp->next;
+	}
+	printf("\nCURRENT targetS\n");
+	target *tempt = targetList;
+	while(tempt != NULL) {
+		printf("%s -> ", tempt->target);
+		for(int i = 0; i < tempt->numDep; i++) {
+			printf("%s ", tempt->dependencies[i]);
+		}
+		for(int i = 0; i < tempt->numAct; i++) {
+			printf("\n%i. %s", i+1, tempt->actions[i]);
+		}
+		printf("\n");
+		tempt = tempt->next;
+	}
 }
 
 int main(int argc, char *argv[]) {
@@ -24,21 +45,19 @@ int main(int argc, char *argv[]) {
 	}
 	while(!feof(fp)) {
 		// Reads extended '\' lines
-		char *line = read_file(fp);
+		char *line = readFile(fp);
 
 		// Process the line if valid
 		if(line) {
 			// Check if it is an action line
-			if(current_target != NULL && *line == '\t') {
-				printf("ACTION: %s\n", line); // DEBUG PRINT
-				process_action_def(line);
+			if(currentTarget != NULL && *line == '\t') {
+				processActionDef(line);
 	        } else { // Process var/target line
-				printf("DECLARATION: %s\n", line); // DEBUG PRINT
-	            current_target = NULL;
-	          	process_line(line);
+	            currentTarget = NULL;
+	          	readLine(line);
 	        }
 		}
 	}
-	//bake_file();
+	//debug();
 	exit(EXIT_SUCCESS);
 }

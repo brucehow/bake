@@ -8,19 +8,19 @@
 #include <string.h>
 #include <ctype.h>
 
-typedef struct target_node {
+typedef struct targetNode {
     char *target;
     char **dependencies;
     char **actions;
-    int num_d; // Number of dependencies
-    int num_a; // Number of actions
-	struct target_node *next;
-} TARGET;
+    int numDep; // Number of dependencies
+    int numAct; // Number of actions
+	struct targetNode *next;
+} target;
 
-extern TARGET *target_list;
-extern TARGET *current_target;
+extern target *targetList;
+extern target *currentTarget;
 
-TARGET *last_target;
+target *lastTarget;
 
-void process_target_def(char *word, char *ch);
-void process_action_def(char *ch);
+void processTargetDef(char *word, char *ch);
+void processActionDef(char *ch);
