@@ -14,15 +14,14 @@
 
 void process_line(char *ch) {
     char *word = NULL;
-
     // Excluding leading spaces
     while(isspace(*ch)) {
         ch++;
     }
-    while(*ch != '\n') {
+    while(*ch != '\0') {
         // Build the word
         if(!isalpha(*ch) && !isdigit(*ch) && *ch != '.') {
-            fprintf(stderr, "Invalid declaration character '%c'\n", *ch);
+            fprintf(stderr, "Invalid word character '%c'\n", *ch);
             exit(EXIT_FAILURE);
         }
         word = append(word, *ch);
@@ -33,16 +32,14 @@ void process_line(char *ch) {
             ch++;
             // Spaces between words are not permitted
             if(!isspace(*ch) && *ch != ':' && *ch != '=') {
-                fprintf(stderr, "Invalid declaration line at '%s'\n", word);
+                fprintf(stderr, "Invalid line definition at '%s'\n", word);
                 exit(EXIT_FAILURE);
             }
         }
         if(*ch == '=') {
-            printf("Variable: %s\n", word);
             process_variable_def(word, ++ch);
             break;
         } else if(*ch == ':') {
-            printf("Target: %s\n", word);
             process_target_def(word, ++ch);
             break;
         }

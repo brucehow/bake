@@ -1,5 +1,5 @@
 /* CITS2002 Project 2018
- * Names:	Bruce How, Vincent Tian
+ * Names: Bruce How, Vincent Tian
  * Student numbers:	22242664, 22262122
 */
 
@@ -27,11 +27,20 @@ void process_variable_def(char *word, char *ch) {
     while(isspace(*ch)) {
         ch++;
     }
-    while(*ch != '\n') {
+    while(*ch != '\0') {
         value = append(value, *ch);
         ch++;
     }
     // Store the value
     new->value = strdup(value);
     free(value);
+
+    // Add the variable to the list
+    if(variable_list == NULL) {
+        variable_list = new;
+        last_variable = new;
+    } else {
+        last_variable->next = new;
+        last_variable = new;
+    }
 }

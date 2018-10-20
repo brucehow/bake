@@ -1,6 +1,6 @@
 /* CITS2002 Project 2018
- * Names:	Bruce How, Vincent Tian
- * Student numbers:	22242664, 22262122
+ * Names: Bruce How, Vincent Tian
+ * Student num_dbers:	22242664, 22262122
 */
 
 #include <stdio.h>
@@ -13,43 +13,40 @@
 TARGET *target_list = NULL;
 TARGET *last_target = NULL;
 
-// Track current target
-TARGET *cur_target = NULL;
+// Target to add actions/dependencies to
+TARGET *current_target = NULL;
 
 void add_dependecy(char *dependency) {
-    if(cur_target->num == 0) {
-        cur_target->dependencies = malloc(sizeof(char*));
-        cur_target->dependencies[0] = malloc(sizeof(char) * strlen(dependency));
-        cur_target->dependencies[0] = strdup(dependency);
-        cur_target->num++;
+    if(current_target->num_d == 0) {
+        current_target->dependencies = malloc(sizeof(char*));
+        current_target->dependencies[0] = malloc(sizeof(char) * strlen(dependency));
+        current_target->dependencies[0] = strdup(dependency);
+        current_target->num_d++;
     } else {
-        cur_target->num++;
-        cur_target->dependencies = realloc(cur_target->dependencies, cur_target->num * sizeof(char*));
-        cur_target->dependencies[cur_target->num] = malloc(sizeof(char) * strlen(dependency));
-        cur_target->dependencies[cur_target->num] = strdup(dependency);
+        current_target->num_d++;
+        current_target->dependencies = realloc(current_target->dependencies, current_target->num_d * sizeof(char*));
+        current_target->dependencies[current_target->num_d] = malloc(sizeof(char) * strlen(dependency));
+        current_target->dependencies[current_target->num_d] = strdup(dependency);
     }
-    printf("Dependency %i = %s\n", cur_target->num, dependency);
 }
 
 void process_target_def(char *word, char *ch) {
-    // Store target definition in a new structure
     TARGET *new = malloc(sizeof(TARGET));
     if(new == NULL) {
         perror(__func__);
         exit(EXIT_FAILURE);
     }
-    cur_target = new;
-    last_target = new;
     new->target = strdup(word);
+    current_target = new;
 
     // Exclude leading spaces
     while(isspace(*ch)) {
         ch++;
     }
 
-    // Build dependency
+    // Build & add dependency
     char *dependency = NULL;
-    while(*ch != '\n') {
+    while(*ch != '\0') {
         if(!isspace(*ch)) {
             dependency = append(dependency, *ch);
         } else if(dependency != NULL) {
@@ -60,4 +57,29 @@ void process_target_def(char *word, char *ch) {
     }
     add_dependecy(dependency);
     free(dependency);
+
+    // Add the target to the list
+    if(target_list == NULL) {
+        target_list = new;
+        last_target = new;
+    } else {
+        last_target->next = new;
+        last_target = new;
+    }
+}
+
+void process_action_def(char *ch) {
+    ch++; // Exclude leading tab
+
+    if(current_target->num_a == 0) {
+        current_target->actions = malloc(sizeof(char*));
+        current_target->actions[0] = malloc(sizeof(char) * strlen(ch));
+        current_target->actions[0] = strdup(ch);
+        current_target->num_a++;
+    } else {
+        current_target->num_a++;
+        current_target->actions = realloc(current_target->actions, current_target->num_a * sizeof(char*));
+        current_target->actions[current_target->num_a] = malloc(sizeof(char) * strlen(ch));
+        current_target->actions[current_target->num_a] = strdup(ch);
+    }
 }

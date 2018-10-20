@@ -11,14 +11,16 @@
 typedef struct target_node {
     char *target;
     char **dependencies;
-    int num;
-    char *action;
+    char **actions;
+    int num_d; // Number of dependencies
+    int num_a; // Number of actions
 	struct target_node *next;
 } TARGET;
 
 extern TARGET *target_list;
-extern TARGET *cur_target;
+extern TARGET *current_target;
 
 TARGET *last_target;
 
 void process_target_def(char *word, char *ch);
+void process_action_def(char *ch);
