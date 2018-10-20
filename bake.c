@@ -8,44 +8,37 @@
 #include "process.h"
 #include "targets.h"
 #include "variables.h"
+#include "append.h"
+#include "readfile.h"
 
-void read_file(FILE *bakefile) {
-	char line[BUFSIZ];
+void bake_file(char *file) {
 
-	while(fgets(line, sizeof line, bakefile) != NULL) {
-		char *ch = line;
-        // Ignore comment lines
-		if(*ch == '#') {
-            continue;
-        }
-        // Check if the line is an action line
-        if(cur_target != NULL) {
-            if(*ch == '\t') {
-                //process_action(cur_target, ch);
-            } else {
-                // No more action lines for current target
-                cur_target = NULL;
-            }
-        } else {
-		    process_line(ch);
-        }
-	}
 }
 
 int main(int argc, char *argv[]) {
-	// Check command line arguments
-	if (argc < 2) {
-		fprintf(stderr, "Expected at least 2 arguments but only 1 was supplied\n");
-		exit(EXIT_FAILURE);
-	}
-
 	// Check filepath validity
-	FILE *fp = fopen(argv[1], "r");
+	FILE *fp = fopen("bakefile", "r");
 	if(fp == NULL) {
 		fprintf(stderr, "Could not open bakefile %s\n", argv[1]);
 		exit(EXIT_FAILURE);
 	}
+	while(!feof(fp)) {
+		// Reads extended '\' lines
+		char *line = read_file(fp);
 
-	read_file(fp);
+		// Process the line if valid
+		if(line) {
+			// Check if it is an action line
+			if(current_target != NULL && *line == '\t') {
+				printf("ACTION: %s\n", line); // DEBUG PRINT
+				process_action_def(line);
+	        } else { // Process var/target line
+				printf("DECLARATION: %s\n", line); // DEBUG PRINT
+	            current_target = NULL;
+	          	process_line(line);
+	        }
+		}
+	}
+	//bake_file();
 	exit(EXIT_SUCCESS);
 }
