@@ -19,15 +19,21 @@ target *currentTarget = NULL;
 void processActionDef(char *ch) {
     ch++; // Exclude leading tab
     if(currentTarget->numAct == 0) {
-        currentTarget->numAct++;
         currentTarget->actions = malloc(sizeof(char*));
-        currentTarget->actions[0] = malloc(sizeof(char) * strlen(ch));
+        if(currentTarget->actions == NULL) {
+            perror(__func__);
+            exit(EXIT_FAILURE);
+        }
         currentTarget->actions[0] = strdup(ch);
-    } else {
-        currentTarget->actions = realloc(currentTarget->actions, currentTarget->numAct * sizeof(char*));
-        currentTarget->actions[currentTarget->numAct] = malloc(sizeof(char) * strlen(ch));
-        currentTarget->actions[currentTarget->numAct] = strdup(ch);
         currentTarget->numAct++;
+    } else {
+        currentTarget->numAct++;
+        currentTarget->actions = realloc(currentTarget->actions, currentTarget->numAct * sizeof(char*));
+        if(currentTarget->actions == NULL) {
+            perror(__func__);
+            exit(EXIT_FAILURE);
+        }
+        currentTarget->actions[currentTarget->numAct-1] = strdup(ch);
     }
 }
 
@@ -35,13 +41,19 @@ void addDependency(char *dependency) {
     if(currentTarget->numDep == 0) {
         currentTarget->numDep++;
         currentTarget->dependencies = malloc(sizeof(char*));
-        currentTarget->dependencies[0] = malloc(sizeof(char) * strlen(dependency));
+        if(currentTarget->dependencies == NULL) {
+            perror(__func__);
+            exit(EXIT_FAILURE);
+        }
         currentTarget->dependencies[0] = strdup(dependency);
     } else {
-        currentTarget->dependencies = realloc(currentTarget->dependencies, currentTarget->numDep * sizeof(char*));
-        currentTarget->dependencies[currentTarget->numDep] = malloc(sizeof(char) * strlen(dependency));
-        currentTarget->dependencies[currentTarget->numDep] = strdup(dependency);
         currentTarget->numDep++;
+        currentTarget->dependencies = realloc(currentTarget->dependencies, currentTarget->numDep * sizeof(char*));
+        if(currentTarget->dependencies == NULL) {
+            perror(__func__);
+            exit(EXIT_FAILURE);
+        }
+        currentTarget->dependencies[currentTarget->numDep-1] = strdup(dependency);
     }
 }
 
