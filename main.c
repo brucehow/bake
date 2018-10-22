@@ -16,12 +16,13 @@
 #include "readfile.h"
 #include "bake.h"
 
-#define OPTLIST "inpsC:f:"
+#define OPTLIST "C:f:inps"
 
 // Argument flags
 bool iflag = false;
 bool nflag = false;
 bool sflag = false;
+char *buildTarget = NULL;
 
 void printInfo() {
 	// Variables
@@ -87,7 +88,7 @@ int main(int argc, char *argv[]) {
 				break;
 			case '?':
 				if(optopt == 'C') {
-					fprintf(stderr, "Usage: %s [-C] [dirpath]\n", argv[0]);
+					fprintf(stderr, "Usage: %s [-C] [dirname]\n", argv[0]);
 					exit(EXIT_FAILURE);
 				} else if(optopt == 'f') {
 					fprintf(stderr, "Usage: %s [-f] [filename]\n", argv[0]);
@@ -98,6 +99,14 @@ int main(int argc, char *argv[]) {
 				}
 		}
 	}
+	// Check for any targetname options
+	argc -= optind;
+	argv += optind;
+	if(argc > 0) {
+		buildTarget = *argv;
+	}
+
+	// Check argument values
 	if(dirpath != NULL) {
 		int result = chdir(dirpath);
 		if(result != 0) {
@@ -119,6 +128,7 @@ int main(int argc, char *argv[]) {
 		exit(EXIT_FAILURE);
 	}
 
+	// Iterate through the file
 	while(!feof(fp)) {
 		// Reads extended '\' lines
 		char *line = readFile(fp);

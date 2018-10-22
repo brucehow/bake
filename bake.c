@@ -11,7 +11,12 @@
 #include "main.h"
 #include "variables.h"
 #include "targets.h"
+#include "filedate.h"
 
 void bake() {
-	printf("iflag = %i\nnflag = %i\nsflag = %i\n", iflag, nflag, sflag);
+	// Check if a target name was specified
+	if(buildTarget == NULL) {
+		buildTarget = targetList->target;
+	}
+	printf("%s\n", buildTarget);
 }

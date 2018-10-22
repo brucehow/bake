@@ -1,5 +1,5 @@
 # Bakefile to build our programs
-myName= Vincent
+myName= Vincen
   age  = 22\
 years
   c99 = std=c99 compiler
