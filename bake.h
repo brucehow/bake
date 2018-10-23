@@ -8,4 +8,4 @@
 #include <stdbool.h>
 #include <string.h>
 
-void bake();
+void bake(char *targetToBuild);

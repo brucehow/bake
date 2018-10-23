@@ -5,10 +5,7 @@ years
   c99 = std=c99 compiler
 # test comment
 mySurname  =   	How are you
-bake.o : cake.h cream.o
-	echo "Hello there"
-	ls -ltr
-	echo "Directory made!"
-target.c : bake.c bake.o
-	echo "WOO"
-	ls
+bake.o : file2 file1 cake.h cream.o
+	@echo "printing SILENCED line"
+file2 : bake.c http://teaching.csse.uwa.edu.au/units/CITS2002/project/dependency-5m
+	echo "BUILDING FILE2"

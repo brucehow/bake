@@ -26,7 +26,6 @@ int compareModDate(char *target, char *dependency) {
     time_t dependencyDate;
 
     if(isUrl(dependency)) {
-        printf("FOUND URL: %s\n", dependency);
         dependencyDate = getURLModDate(dependency);
     } else {
         dependencyDate = getFileModDate(dependency);

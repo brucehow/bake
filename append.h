@@ -9,3 +9,4 @@
 #include <ctype.h>
 
 char *append(char *word, char ch);
+char *appendStr(char *word, char *add);

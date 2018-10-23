@@ -10,5 +10,3 @@
 extern bool iflag;
 extern bool nflag;
 extern bool sflag;
-
-extern char *buildTarget;

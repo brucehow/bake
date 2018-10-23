@@ -9,18 +9,32 @@
 #include "curl.h"
 
 #define URLHEAD "urlheader"
-#define CURLCMD "curl --head -v -o urlheader "
-#define CURLLEN 29
+#define CURLCMD "curl --head -sv -o urlheader "
+#define CURLLEN 30
 
 void generateFile(char *url) {
-    char *command;
-    int lenUrl = strlen(url);
-
-    command = malloc(CURLLEN * sizeof(char));
+    char *command = malloc(CURLLEN * sizeof(char));
     strcpy(command, CURLCMD);
-    command = realloc(command, (CURLLEN + lenUrl) * sizeof(char));
+    command = realloc(command, (CURLLEN + strlen(url)) * sizeof(char));
     strcat(command, url);
-    execl("/bin/sh", "sh", "-c", command, NULL);
+
+    switch(fork()) {
+		case -1: // Process creation failed
+			perror("Fork");
+			exit(EXIT_FAILURE);
+		case 0: // Child process
+			execl("/bin/sh", "sh", "-c", command, NULL);
+			perror("execl");
+			exit(EXIT_FAILURE);
+		default: {
+			int status;
+			wait(&status);
+			if(WEXITSTATUS(status) != 0) {
+				fprintf(stderr, "URL: Failed to generate urlheader file\n");
+				exit(EXIT_FAILURE);
+			}
+		}
+	}
     free(command);
 }
 

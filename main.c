@@ -22,7 +22,6 @@
 bool iflag = false;
 bool nflag = false;
 bool sflag = false;
-char *buildTarget = NULL;
 
 void printInfo() {
 	// Variables
@@ -100,10 +99,11 @@ int main(int argc, char *argv[]) {
 		}
 	}
 	// Check for any targetname options
+	char *targetToBuild = NULL;
 	argc -= optind;
 	argv += optind;
 	if(argc > 0) {
-		buildTarget = *argv;
+		targetToBuild = *argv;
 	}
 
 	// Check argument values
@@ -146,7 +146,7 @@ int main(int argc, char *argv[]) {
 	if(pflag) {
 		printInfo();
 	} else {
-		bake();
+		bake(targetToBuild);
 	}
 	exit(EXIT_SUCCESS);
 }
