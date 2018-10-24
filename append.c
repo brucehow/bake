@@ -30,11 +30,3 @@ char *append(char *word, char ch) {
     }
     return word;
 }
-
-char *appendStr(char *word, char *add) {
-    while(*add != '\0') {
-        word = append(word, *add);
-        add++;
-    }
-    return word;
-}

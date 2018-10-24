@@ -1,0 +1,18 @@
+# This is a comment
+C99 = -std=c99 -Werror -Wall
+
+file = myprog
+
+name = Vincent
+author = Bruce\
+How
+
+All : filqw
+	echo "compiling $(PID)"
+	echo "compile this file $(RAND)"
+
+Target1 : fdwdq
+	echo "Compiling file1"
+	echo "Compiling file2"
+	echo "Target1 compiled"
+

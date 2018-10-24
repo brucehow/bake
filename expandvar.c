@@ -3,37 +3,49 @@
 #include <string.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include <math.h>
 #include "append.h"
 #include "variables.h"
+#include "expandvar.h"
+
+// Value of PATH_MAX is 4096
+#define PATH_MAX 4096
 
 char *fetchVariable(char *var) {
-    char *varName = NULL;
     var += 2;
-    while(*var != ')') {
-        varName = append(varName, *var);
-        var++;
-    }
 
-    if(strcmp(varName, "PID")) {
-        return itoa(getpid());
-    } else if(strcmp(varName, "PPID")) {
-        return getppid();
-    } else if(strcmp(varName, "PWD")) {
-        char cwd[BUFSIZ];
-        if(getcwd(cwd, sizeof(cwd)) == NULL) {
+    if(strcmp(var, "PID") == 0) {
+        int pid = getpid();
+        int pidLen = floor(log10(abs(pid))) + 1;
+        char *buffer = malloc(sizeof(char) * pidLen);
+        sprintf(buffer, "%d", pid);
+        return buffer;
+    } else if(strcmp(var, "PPID") == 0) {
+        int ppid = getppid();
+        int ppidLen = floor(log10(abs(ppid))) + 1;
+        char *buffer = malloc(sizeof(char) * ppidLen);
+        sprintf(buffer, "%d", ppid);
+        return buffer;
+    } else if(strcmp(var, "PWD") == 0) {
+        char *cwd = malloc(sizeof(char)*PATH_MAX);
+        if(getcwd(cwd, sizeof(char)*PATH_MAX) != NULL) {
+            return cwd;
+        } else {
             perror("getcwd()");
             exit(EXIT_FAILURE);
         }
-        return cwd;
-    } else if(strcmp(varName, "RAND")) {
-        return itoa(rand());
-    } else if(strcmp(varName, "HOME")) {
-        return getenv();
+    } else if(strcmp(var, "RAND") == 0) {
+        int num = rand();
+        int numLen = floor(log10(abs(num))) + 1;
+        char *buffer = malloc(sizeof(char) * numLen);
+        sprintf(buffer, "%i", num);
+        return buffer;
+    } else if(strcmp(var, "HOME") == 0) {
+        return getenv("HOME");
     }
-
     struct variableNode *it = variableList;
     while(it != NULL) {
-        if(it->variable == varName) {
+        if(strcmp(it->variable, var) == 0) {
             return it->value;
         }
         it = it->next;
@@ -42,68 +54,48 @@ char *fetchVariable(char *var) {
 }
 
 char *expandVariables(char *ch) {
-    char *var = NULL;
+    // Store the expanded line
     char *expanded = NULL;
+    // Stores any var builds
+    char *var = NULL;
 
     while(*ch != '\0') {
-        if(*ch == '$') {
-            var = append(var, *ch);
-            ch++;
-            // Exit if we reach the nullbyte
-            if(*ch == '\0') {
-                expanded = appendStr(expanded, var);
-                return expanded;
-            }
-            // Is a variable
-            if(*ch == '(') {
-                var = append(var, *ch);
-
-                // Check if the next char is valid
-                ch++;
-                if(*ch == '\0') {
-                    expanded = appendStr(expanded, var);
-                    return expanded;
-                }  // Empty variable is not a variable
-                else if(*ch == ')') {
-                    expanded = appendStr(expanded, var);
-                    var = NULL;
-                    ch++;
-                    continue;
-                }
-
-                ch--; // Backtracks to the open bracket;
-
-                // Iterates until the end bracket is found
-                while(*ch != ')') {
-                    ch++;
-                    if(*ch == '\0') {
-                        expanded = appendStr(expanded, var);
-                        return expanded;
-                    } else if(isspace(*ch)) {
-                        expanded = appendStr(expanded, var);
-                        ch++;
-                        continue;
-                    }
-                    var = append(var, *ch);
-                }
-                // Variable found
-                expanded = appendStr(expanded, fetchVariable(var));
-                var = NULL;
-            } else {
-                expanded = appendStr(expanded, var);
-                var = NULL;
-            }
-        } else {
+        // Look for the '$' char
+        if(*ch != '$') {
             expanded = append(expanded, *ch);
+            ch++;
+            continue;
         }
+        var = append(var, *ch);
+        ch++;
+        // Check for preceeding (
+        if(*ch != '(') {
+            var = append(var, *ch);
+            strcat(expanded, var);
+            var = NULL;
+            continue;
+        }
+        // We have $(..
+        var = append(var, *ch);
+        ch++;
+        while(*ch != ')' && *ch != '\0') {
+            var = append(var, *ch);
+            if(!isdigit(*ch) && !isalpha(*ch)) {
+                strcat(expanded, var);
+                var = NULL;
+                ch++;
+                continue;
+            }
+            ch++;
+        }
+        if(*ch == '\0') {
+            strcat(expanded, var);
+            return expanded;
+        }
+        strcat(expanded, fetchVariable(var));
+        var = NULL;
         ch++;
     }
     free(var);
     return expanded;
-}
-
-int main(int argc, char *argv[]) {
-    char *line = "hello my $(pid) is $(ppid)";
-    char *x = expandVariables(line);
-    printf("Extended: %s\n", x);
 }

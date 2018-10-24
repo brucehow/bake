@@ -9,8 +9,8 @@
 #include "curl.h"
 
 #define URLHEAD "urlheader"
-#define CURLCMD "curl --head -sv -o urlheader "
-#define CURLLEN 30
+#define CURLCMD "curl --head -s -o urlheader "
+#define CURLLEN 29
 
 void generateFile(char *url) {
     char *command = malloc(CURLLEN * sizeof(char));
@@ -52,7 +52,7 @@ int getResponseCode(char *ch) {
         }
         ch++;
     }
-    return 0;
+    return -1; // Return -1 if no responseCode is found
 }
 
 // Gets the header for each line
@@ -111,11 +111,15 @@ time_t getURLModDate(char *url) {
         fprintf(stderr, "URL: Response code %d returned\n", responseCode);
         exit(EXIT_FAILURE);
     }
+    char *lineHeader = NULL;
     while(fgets(line, sizeof line, fp)) {
-        if(strcasecmp(getLineHeader(line), "LAST-MODIFIED:") == 0) {
+        lineHeader = getLineHeader(line);
+        if(strcasecmp(lineHeader, "LAST-MODIFIED:") == 0) {
             return dateConvert(findLastModifiedDate(line));
         }
+        lineHeader = NULL;
     }
+    free(lineHeader);
     fprintf(stderr, "Failed to read URL modification date\n");
     exit(EXIT_FAILURE);
 }

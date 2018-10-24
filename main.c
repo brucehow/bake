@@ -15,6 +15,7 @@
 #include "append.h"
 #include "readfile.h"
 #include "bake.h"
+#include "expandvar.h"
 
 #define OPTLIST "C:f:inps"
 
@@ -131,15 +132,16 @@ int main(int argc, char *argv[]) {
 	// Iterate through the file
 	while(!feof(fp)) {
 		// Reads extended '\' lines
-		char *line = readFile(fp);
+		char *extend = readFile(fp);
 
 		// Process the line if valid
-		if(line) {
+		if(extend && extend[0] != '\0') {
+			char *line = expandVariables(extend);
 			if(currentTarget != NULL && *line == '\t') {
 				processActionDef(line);
 	        } else {
 	            currentTarget = NULL;
-	          	readLine(line);
+	         	readLine(line);
 	        }
 		}
 	}

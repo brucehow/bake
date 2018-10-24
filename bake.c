@@ -14,6 +14,8 @@
 #include "targets.h"
 #include "filedate.h"
 
+char *builtTarget = NULL;
+
 void execute(char *command) {
 	bool silenced = sflag;
 	switch(fork()) {
@@ -82,7 +84,9 @@ void buildTarget(char *target) {
 				execute(it->actions[i]);
 			}
 		}
-
+	} else if(strcmp(target, builtTarget) == 0) {
+		printf("Bake: '%s' is up to date\n", builtTarget);
+		exit(EXIT_SUCCESS);
 	}
 }
 
@@ -91,11 +95,13 @@ void bake(char *targetToBuild) {
 	// Check that there are targets
 	if(targetList == NULL) {
 		fprintf(stderr, "Could not identify any targets in the specified file\n");
+		exit(EXIT_FAILURE);
 	}
 
 	// Check if a target name was specified
 	if(targetToBuild == NULL) {
 		targetToBuild = targetList->target;
 	}
+	builtTarget = targetToBuild;
 	buildTarget(targetToBuild);
 }
