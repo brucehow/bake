@@ -63,6 +63,11 @@ void buildTarget(char *target) {
 	time_t targetDate = getFileModDate(it->target);
 	time_t dependencyDate;
 
+	// If there are no dependecies, we build it
+	if(it->numDep == 0) {
+		buildRequired = true;
+	}
+
 	for(int i = 0; i < it->numDep; i++) {
 		if(isUrl(it->dependencies[i])) {
 			dependencyDate = getURLModDate(it->dependencies[i]);

@@ -16,7 +16,9 @@ bool isUrl(char *dependency) {
 }
 
 time_t getFileModDate(char *file) {
-    stat(file, &statAttribute);
+    if(stat(file, &statAttribute) < 0) {
+        return 0;
+    }
     fileAttribute = gmtime(&statAttribute.st_mtime);
-    return(mktime(fileAttribute) + (8 * 60 * 60));
+    return(mktime(fileAttribute));
 }

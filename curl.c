@@ -30,7 +30,7 @@ void generateFile(char *url) {
 			int status;
 			wait(&status);
 			if(WEXITSTATUS(status) != 0) {
-				fprintf(stderr, "URL: Failed to generate urlheader file\n");
+				fprintf(stderr, "URL: Failed to generate urlheader file for '%s'\n", url);
 				exit(EXIT_FAILURE);
 			}
 		}
@@ -108,7 +108,7 @@ time_t getURLModDate(char *url) {
     int responseCode = getResponseCode(line);
 
     if(responseCode != 200) {
-        fprintf(stderr, "URL: Response code %d returned\n", responseCode);
+        fprintf(stderr, "URL: Response code %d returned for '%s'\n", responseCode, url);
         exit(EXIT_FAILURE);
     }
     char *lineHeader = NULL;

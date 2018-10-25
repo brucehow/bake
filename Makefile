@@ -6,3 +6,5 @@ DEPENDENCIES = append.c bake.c curl.c expandvar.c filedate.c main.c process.c re
 Bake : $(DEPENDENCIES)
 	@$(C99) $(DEPENDENCIES)
 	@echo "make: 'Bake' successfully built."
+clean :
+	rm -f bake

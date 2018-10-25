@@ -71,7 +71,7 @@ char *expandVariables(char *ch) {
         // Check for preceeding (
         if(*ch != '(') {
             var = append(var, *ch);
-            strcat(expanded, var);
+            expanded = appendStr(expanded, var);
             var = NULL;
             continue;
         }
@@ -81,7 +81,7 @@ char *expandVariables(char *ch) {
         while(*ch != ')' && *ch != '\0') {
             var = append(var, *ch);
             if(!isdigit(*ch) && !isalpha(*ch)) {
-                strcat(expanded, var);
+                expanded = appendStr(expanded, var);
                 var = NULL;
                 ch++;
                 continue;
@@ -89,10 +89,10 @@ char *expandVariables(char *ch) {
             ch++;
         }
         if(*ch == '\0') {
-            strcat(expanded, var);
+            expanded = appendStr(expanded, var);
             return expanded;
         }
-        strcat(expanded, fetchVariable(var));
+        expanded = appendStr(expanded, fetchVariable(var));
         var = NULL;
         ch++;
     }

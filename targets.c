@@ -82,8 +82,10 @@ void processTargetDef(char *word, char *ch) {
         }
         ch++;
     }
-    addDependency(dependency);
-    free(dependency);
+    if(dependency != NULL) {
+        addDependency(dependency);
+        free(dependency);
+    }
 
     // Add the target to the list
     if(targetList == NULL) {

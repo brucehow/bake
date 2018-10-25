@@ -1,17 +1,8 @@
-# This is a comment
-C99 = -std=c99 -Werror -Wall
+# Make file for Bake
 
-file = myprog
+C99 = cc -std=c99 -Werror -Wall -pedantic -o bake
+DEPENDENCIES = append.c bake.c curl.c expandvar.c filedate.c main.c process.c readfile.c targets.c variables.c
 
-name = Vincent
-author = Bruce\
-How
-
-file2 : file3 dqwu8djwqdu8wqhdqdhwquhduwqhduwqhu
-	@echo "file2 is being rebuilto (name)"
-
-Target1 : fdwdq
-	echo "Compiling file1"
-	echo "Compiling file2"
-	echo "Target1 compiled"
-
+Bake : tar $(DEPENDENCIES)
+	@$(C99) $(DEPENDENCIES)
+	@echo "make: 'Bake' successfully built."
