@@ -1,4 +1,4 @@
-# Make file for Bake
+# Bakefile for Bake
 
 PROGNAME = bake
 C99 = cc -std=c99 -Werror -Wall -pedantic
@@ -6,6 +6,7 @@ DEPENDENCIES = append.c bake.c curl.c expandvar.c filedate.c main.c process.c re
 
 Bake : $(DEPENDENCIES)
 	@$(C99) -o $(PROGNAME) $(DEPENDENCIES)
-	@echo "make: 'Bake' successfully built."
+	@echo "Bake: 'Bake' successfully built."
 clean :
-	rm -f $(PROGNAME)
+	@rm -f $(PROGNAME)
+	@echo "Bake: 'Bake' has been removed."

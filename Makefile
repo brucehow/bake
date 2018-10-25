@@ -8,4 +8,5 @@ Bake : $(DEPENDENCIES)
 	@$(C99) -o $(PROGNAME) $(DEPENDENCIES)
 	@echo "make: 'Bake' successfully built."
 clean :
-	rm -f $(PROGNAME)
+	@rm -f $(PROGNAME)
+	@echo "make: 'Bake' has been removed."
