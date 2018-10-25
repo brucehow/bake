@@ -58,7 +58,7 @@ void addDependency(char *dependency) {
 }
 
 void processTargetDef(char *word, char *ch) {
-    target *new = malloc(sizeof(target));
+    target *new = calloc(1, sizeof(target));
     if(new == NULL) {
         perror(__func__);
         exit(EXIT_FAILURE);

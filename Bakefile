@@ -7,7 +7,7 @@ name = Vincent
 author = Bruce\
 How
 
-All : filqw
+All : http://teaching.csse.uwa.edu.au/units/CITS2002/project/dependency-5m file1 89849832948239345678901234567890
 	echo "compiling $(PID)"
 	echo "compile this file $(RAND)"
 
