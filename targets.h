@@ -8,6 +8,10 @@
 #include <string.h>
 #include <ctype.h>
 
+/**
+ * LinkedList structure used to contain every target and their respective
+ * actions and dependecies
+ */
 typedef struct targetNode {
     char *target;
     char **dependencies;
@@ -17,10 +21,22 @@ typedef struct targetNode {
 	struct targetNode *next;
 } target;
 
+// Global variables to allow access for other files
 extern target *targetList;
 extern target *currentTarget;
 
+// Keep track of the last variable
 target *lastTarget;
 
-void processTargetDef(char *word, char *ch);
-void processActionDef(char *ch);
+/**
+ * Adds every declaration if any to a particular target
+ * @param word           The word or target that was just found
+ * @param dependencyLine The string containing the dependecies
+ */
+void processTargetDef(char *word, char *dependencyLine);
+
+/**
+ * Adds every action if any to the target that was just processed
+ * @param actLine The string containing the actions
+ */
+void processActionDef(char *actLine);

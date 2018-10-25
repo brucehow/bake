@@ -9,13 +9,18 @@
 #include "curl.h"
 
 #define URLHEAD "urlheader"
-#define CURLCMD "curl --head -s -o urlheader "
-#define CURLLEN 29
+#define CURL "curl --head -s -o urlheader "
+#define CMDLEN 29
+#define HEADLEN 14
 
+/**
+ * Executes the curl command in bash to generate a file containing a particular * URL's header information. If the URL is not found, an error is reported to
+ * the user.
+ */
 void generateFile(char *url) {
-    char *command = malloc(CURLLEN * sizeof(char));
-    strcpy(command, CURLCMD);
-    command = realloc(command, (CURLLEN + strlen(url)) * sizeof(char));
+    char *command = malloc(CMDLEN * sizeof(char));
+    strcpy(command, CURL);
+    command = realloc(command, (CMDLEN + strlen(url)) * sizeof(char));
     strcat(command, url);
 
     switch(fork()) {
@@ -38,6 +43,10 @@ void generateFile(char *url) {
     free(command);
 }
 
+/**
+ * Gets the response code from the line containing the HTTP response by
+ * iterating through until a space is found, and then building the response code
+ */
 int getResponseCode(char *ch) {
     char *responseCode = NULL;
 
@@ -55,17 +64,23 @@ int getResponseCode(char *ch) {
     return -1; // Return -1 if no responseCode is found
 }
 
-// Gets the header for each line
+/**
+ * Grabs the first few characters in a given line which would normally contain the Line-Modified text
+ */
 char *getLineHeader(char *ch) {
       char *header = NULL;
-      for(int i = 0; i < 14; i++) {
+      for(int i = 0; i < HEADLEN; i++) {
             header = append(header, *ch);
             ch++;
       }
       return header;
 }
 
-// Extract the date from the Last-Modified line
+/**
+ * Grabs the date from the Last-Modified line in the URL header file. Assumes
+ * that the format of the Last-Modified line works in a way where the Date
+ * beings after the first space character
+ */
 char *findLastModifiedDate(char *ch) {
     char *date = NULL;
     while(!isspace(*ch)){
@@ -79,6 +94,10 @@ char *findLastModifiedDate(char *ch) {
     return date;
 }
 
+/**
+ * Converts a string date into epoch time using the strptime() and mktime()
+ * functions
+ */
 time_t dateConvert(char *date) {
     struct tm tm;
     time_t epoch = 0;
@@ -93,6 +112,11 @@ time_t dateConvert(char *date) {
     return epoch;
 }
 
+/**
+ * Gets the modification date of a URL by employing all the helper functions
+ * above. The function uses curl to grab a URL's header file and returns then
+ * last modified date of the given URL in epoch time
+ */
 time_t getURLModDate(char *url) {
     generateFile(url);
     FILE *fp;
@@ -121,7 +145,8 @@ time_t getURLModDate(char *url) {
         }
         lineHeader = NULL;
     }
+    fclose(fp);
     free(lineHeader);
-    fprintf(stderr, "Failed to read URL modification date\n");
+    fprintf(stderr, "Failed to read URL modification date for '%s'\n", url);
     exit(EXIT_FAILURE);
 }

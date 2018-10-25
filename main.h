@@ -5,8 +5,11 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <getopt.h>
 #include <stdbool.h>
+#include <string.h>
 
+// Global variables specifying if a particular flag is true
 extern bool iflag;
 extern bool nflag;
 extern bool sflag;

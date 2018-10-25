@@ -12,6 +12,10 @@
 #include "targets.h"
 #include "append.h"
 
+/**
+ * Reads the line and identifies the word prior to '=' or ':'. Iterates through
+ * each char and reports to the user if an invalid word definition is used
+ */
 void readLine(char *ch) {
     char *word = NULL;
     // Excluding leading spaces

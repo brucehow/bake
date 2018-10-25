@@ -11,6 +11,11 @@
 // Value of PATH_MAX is 4096
 #define PATH_MAX 4096
 
+/**
+ * Returns the value of a variable. Uses the variableList LinkedList to locate
+ * defined variables and their respective values. Also handles predefined
+ * variables
+ */
 char *fetchVariable(char *var) {
     var += 2;
 
@@ -53,6 +58,11 @@ char *fetchVariable(char *var) {
     return "";
 }
 
+/**
+ * Iterates through the characters of a given string and attempts to locate any
+ * sequence of characters that start with '$(' contain only alphanumeric
+ * characters, and ends with a ')'
+ */
 char *expandVariables(char *ch) {
     // Store the expanded line
     char *expanded = NULL;

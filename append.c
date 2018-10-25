@@ -9,6 +9,10 @@
 #include <ctype.h>
 #include "append.h"
 
+/**
+ * Dynamically allocates memory to word to accomodate for an additional
+ * character and null byte symbol to be added
+ */
 char *append(char *word, char ch) {
     if(word == NULL) {
         word = malloc(2 * sizeof(char));
@@ -31,6 +35,9 @@ char *append(char *word, char ch) {
     return word;
 }
 
+/**
+ * Utilises append() to add each character from add to word
+ */
 char *appendStr(char *word, char *add) {
     while(*add != '\0') {
         word = append(word, *add);

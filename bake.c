@@ -16,8 +16,13 @@
 #include "filedate.h"
 #include "curl.h"
 
-char *builtTarget = NULL;
+// Stores the original target to build
+char *targetToBuild = NULL;
 
+/**
+ * Uses fork() to create child processes to execute bash commands. Checks for
+ * exit statuses, the iflag and action line modifiers to alter the output
+ */
 void execute(char *command) {
 	bool silenced = sflag;
 	switch(fork()) {
@@ -46,13 +51,17 @@ void execute(char *command) {
 	}
 }
 
-// Main function handling building of targets
+/**
+ * Handles the building of a target. Uses the targetList LinkedList to identify * a particular target's dependencies. The function is recusive and calls
+ * itself when a dependency is also a target that may require building.
+ */
 void buildTarget(char *target) {
 	bool buildRequired = false;
 
-	// Iterator to iterate through the list
+	// Iterator to iterate through the target list
 	struct targetNode *it = targetList;
 
+	// Find the target that matches 'target'
 	while(strcmp(it->target, target) != 0) {
 		it = it->next;
 		if(it == NULL) {
@@ -60,11 +69,12 @@ void buildTarget(char *target) {
 			exit(EXIT_FAILURE);
 		}
 	}
+	// Date 0 is returned if the file is non-existant
 	time_t targetDate = getFileModDate(it->target);
 	time_t dependencyDate;
 
-	// If there are no dependecies, we build it
-	if(it->numDep == 0) {
+	// If there are no dependecies or target doesnt exits as a file
+	if(it->numDep == 0 || targetDate == 0) {
 		buildRequired = true;
 	}
 
@@ -74,8 +84,7 @@ void buildTarget(char *target) {
 		} else {
 			dependencyDate = getFileModDate(it->dependencies[i]);
 		}
-		if(dependencyDate == 0 || targetDate == 0
-			|| difftime(targetDate, dependencyDate) < 0) {
+		if(difftime(targetDate, dependencyDate) <= 0) {
 			buildRequired = true;
 
 			// See if the dependency is also a target
@@ -84,6 +93,7 @@ void buildTarget(char *target) {
 
 				while(itTar != NULL) {
 					if(strcmp(itTar->target, it->dependencies[i]) == 0) {
+						// Recursively build the target and it's dependecies
 						buildTarget(it->dependencies[i]);
 					}
 					itTar = itTar->next;
@@ -94,30 +104,37 @@ void buildTarget(char *target) {
 	if(buildRequired) {
 		for(int i = 0; i < it->numAct; i++) {
 			if(nflag) {
-				// Just print, dont execute
+				// Just print, dont execute the commands
 				printf("%s\n", it->actions[i]);
 			} else {
 				execute(it->actions[i]);
 			}
 		}
-	} else if(strcmp(target, builtTarget) == 0) {
-		printf("Bake: '%s' is up to date\n", builtTarget);
+	}
+	// No building required and we are trying to build targetToBuild
+	else if(strcmp(target, targetToBuild) == 0) {
+		printf("Bake: '%s' is up to date\n", targetToBuild);
 		exit(EXIT_SUCCESS);
 	}
 }
 
-// Pre-checks to determine the "main" target to build
-void bake(char *targetToBuild) {
+/**
+ * Determines the initial target to build. Identifies if the initial target to
+ * be built is specified in as an argument or is the first target in the
+ * Bakefile
+ */
+void bake(char *targetArg) {
 	// Check that there are targets
 	if(targetList == NULL) {
 		fprintf(stderr, "Could not identify any targets in the specified file\n");
 		exit(EXIT_FAILURE);
 	}
 
-	// Check if a target name was specified
-	if(targetToBuild == NULL) {
+	// Check if a target arg was specified
+	if(targetArg == NULL) {
 		targetToBuild = targetList->target;
+	} else {
+		targetToBuild = targetArg;
 	}
-	builtTarget = targetToBuild;
 	buildTarget(targetToBuild);
 }

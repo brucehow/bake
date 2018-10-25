@@ -13,7 +13,11 @@
 variable *variableList = NULL;
 variable *lastVariable = NULL;
 
-void processVariableDef(char *word, char *ch) {
+/**
+ * Reads the line after the '=' symbol of a variable declaration and add the
+ * appropiate value to the appropiate variable
+ */
+void processVariableDef(char *word, char *valLine) {
     // Store variable definition in a new structure
     variable *new = calloc(1, sizeof(variable));
     if(new == NULL) {
@@ -24,12 +28,12 @@ void processVariableDef(char *word, char *ch) {
 
     // Build the value
     char *value = NULL;
-    while(isspace(*ch)) {
-        ch++;
+    while(isspace(*valLine)) {
+        valLine++;
     }
-    while(*ch != '\0') {
-        value = append(value, *ch);
-        ch++;
+    while(*valLine != '\0') {
+        value = append(value, *valLine);
+        valLine++;
     }
     // Store the value
     new->value = strdup(value);

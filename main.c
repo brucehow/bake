@@ -24,6 +24,11 @@ bool iflag = false;
 bool nflag = false;
 bool sflag = false;
 
+/**
+ * Prints all variables, targets and actions to the user. The function iterates
+ * through each LinkedList to print the relevant info. Uses bolded and tab
+ * indentation in the output for clear output.
+ */
 void printInfo() {
 	// Variables
 	variable *varItem = variableList;
@@ -57,13 +62,17 @@ void printInfo() {
 
 }
 
+/**
+ * Main function to be called when ./bake is used. Handles command line
+ * arguments using getopt() and prints appropiate error messages where needed
+ */
 int main(int argc, char *argv[]) {
 
 	int opt;
 	bool pflag = false;
 	char *filename = NULL;
 	char *dirpath = NULL;
-	opterr = 0; // Use our own error printing
+	opterr = 0; // Use custom error printing
 
 	// Argument handler
 	while((opt = getopt(argc, argv, OPTLIST)) != -1) {

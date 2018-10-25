@@ -8,6 +8,9 @@
 #include <string.h>
 #include <ctype.h>
 
+/**
+ * Removes trailing \n and \r symbols in a line prior to the \0 symbol
+ */
 void trimLine(char *line) {
     while(*line != '\0') {
         if(*line == '\n' || *line == '\r') {
@@ -18,6 +21,11 @@ void trimLine(char *line) {
     }
 }
 
+/**
+ * Reads each line from a given file and checks if the last character contains
+ * the extension line char, '\'. Extends the line to the next line accordingly.
+ * Comment lines, starting with '#' are excluded at this point
+ */
 char* readFile(FILE *bakefile) {
 	char line[BUFSIZ];
     int len = 0;
@@ -30,7 +38,7 @@ char* readFile(FILE *bakefile) {
         if(*line == '#') {
             continue;
         }
-		trimLine(line); // Remove trailing \n \r
+		trimLine(line);
         len = strlen(line);
         fullLen += len;
 

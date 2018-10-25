@@ -16,15 +16,19 @@ target *lastTarget = NULL;
 // Target to add actions/dependencies to
 target *currentTarget = NULL;
 
-void processActionDef(char *ch) {
-    ch++; // Exclude leading tab
+/**
+ * Adds the action line to the appropiate target. Dynamically allocates memory
+ * to the LinkedList and targetNode to accomodate for just enough space
+ */
+void processActionDef(char *actLine) {
+    actLine++; // Exclude leading tab
     if(currentTarget->numAct == 0) {
         currentTarget->actions = malloc(sizeof(char*));
         if(currentTarget->actions == NULL) {
             perror(__func__);
             exit(EXIT_FAILURE);
         }
-        currentTarget->actions[0] = strdup(ch);
+        currentTarget->actions[0] = strdup(actLine);
         currentTarget->numAct++;
     } else {
         currentTarget->numAct++;
@@ -33,10 +37,14 @@ void processActionDef(char *ch) {
             perror(__func__);
             exit(EXIT_FAILURE);
         }
-        currentTarget->actions[currentTarget->numAct-1] = strdup(ch);
+        currentTarget->actions[currentTarget->numAct-1] = strdup(actLine);
     }
 }
 
+/**
+ * Adds a single dependency to the appropiate target. Dynamically allocates
+ * memory to the LinkedList and targetNode to accomodate for just enough space
+ */
 void addDependency(char *dependency) {
     if(currentTarget->numDep == 0) {
         currentTarget->numDep++;
@@ -57,7 +65,11 @@ void addDependency(char *dependency) {
     }
 }
 
-void processTargetDef(char *word, char *ch) {
+/**
+ * Reads the line after the ':' symbol of a target declaration and add the
+ * appropiate dependecies if any, to the appropiate target
+ */
+void processTargetDef(char *word, char *dependencyLine) {
     target *new = calloc(1, sizeof(target));
     if(new == NULL) {
         perror(__func__);
@@ -67,20 +79,20 @@ void processTargetDef(char *word, char *ch) {
     currentTarget = new;
 
     // Exclude leading spaces
-    while(isspace(*ch)) {
-        ch++;
+    while(isspace(*dependencyLine)) {
+        dependencyLine++;
     }
 
     // Build & add dependency
     char *dependency = NULL;
-    while(*ch != '\0') {
-        if(!isspace(*ch)) {
-            dependency = append(dependency, *ch);
+    while(*dependencyLine != '\0') {
+        if(!isspace(*dependencyLine)) {
+            dependency = append(dependency, *dependencyLine);
         } else if(dependency != NULL) {
             addDependency(dependency);
             dependency = NULL;
         }
-        ch++;
+        dependencyLine++;
     }
     if(dependency != NULL) {
         addDependency(dependency);
