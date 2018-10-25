@@ -10,4 +10,4 @@ struct tm *fileAttribute;
 struct stat statAttribute;
 
 bool isUrl(char *dependency);
-int compareModDate(char *target, char *dependency);
+time_t getFileModDate(char *file);

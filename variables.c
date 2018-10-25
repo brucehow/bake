@@ -15,7 +15,7 @@ variable *lastVariable = NULL;
 
 void processVariableDef(char *word, char *ch) {
     // Store variable definition in a new structure
-    variable *new = malloc(sizeof(variable));
+    variable *new = calloc(1, sizeof(variable));
     if(new == NULL) {
         perror(__func__);
         exit(EXIT_FAILURE);

@@ -115,7 +115,9 @@ time_t getURLModDate(char *url) {
     while(fgets(line, sizeof line, fp)) {
         lineHeader = getLineHeader(line);
         if(strcasecmp(lineHeader, "LAST-MODIFIED:") == 0) {
-            return dateConvert(findLastModifiedDate(line));
+            time_t converted = dateConvert(findLastModifiedDate(line));
+            fclose(fp);
+            return converted;
         }
         lineHeader = NULL;
     }

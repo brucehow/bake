@@ -9,10 +9,12 @@
 #include <stdbool.h>
 #include <unistd.h>
 #include <sys/wait.h>
+#include <time.h>
 #include "bake.h"
 #include "main.h"
 #include "targets.h"
 #include "filedate.h"
+#include "curl.h"
 
 char *builtTarget = NULL;
 
@@ -58,8 +60,17 @@ void buildTarget(char *target) {
 			exit(EXIT_FAILURE);
 		}
 	}
+	time_t targetDate = getFileModDate(it->target);
+	time_t dependencyDate;
+
 	for(int i = 0; i < it->numDep; i++) {
-		if(compareModDate(target, it->dependencies[i]) < 0) {
+		if(isUrl(it->dependencies[i])) {
+			dependencyDate = getURLModDate(it->dependencies[i]);
+		} else {
+			dependencyDate = getFileModDate(it->dependencies[i]);
+		}
+		if(dependencyDate == 0 || targetDate == 0
+			|| difftime(targetDate, dependencyDate) < 0) {
 			buildRequired = true;
 
 			// See if the dependency is also a target

@@ -150,5 +150,6 @@ int main(int argc, char *argv[]) {
 	} else {
 		bake(targetToBuild);
 	}
+	fclose(fp);
 	exit(EXIT_SUCCESS);
 }
