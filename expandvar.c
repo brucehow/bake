@@ -70,7 +70,6 @@ char *expandVariables(char *ch) {
         ch++;
         // Check for preceeding (
         if(*ch != '(') {
-            var = append(var, *ch);
             expanded = appendStr(expanded, var);
             var = NULL;
             continue;
